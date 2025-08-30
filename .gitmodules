@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/henilmalaviya/hydrochain-backend
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Kaushal-00/hydrochain-frontend
