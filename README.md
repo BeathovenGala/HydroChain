@@ -24,7 +24,7 @@ Blockchain technology serves as the foundation for trust, ensuring every transac
 - **Issue Request Management**: Streamlined credit issuance workflow
 - **Buy Request Processing**: Secure purchase transaction handling  
 - **Authentication System**: Role-based access control for all user types
-- **Request Tracking**: PostgreSQL database for comprehensive audit trails
+- **Request Tracking**: SQLite database plus a hash-chained ledger for audit trails
 
 ### Smart Contracts
 - **Solidity-based Smart Contracts**: Automated credit lifecycle management
@@ -65,8 +65,8 @@ Built with modern web technologies for optimal user experience:
 - **ShadCN UI** for consistent, accessible components
 
 ### Backend
-- **Elysia Framework** for robust server-side logic
-- **PostgreSQL** for reliable data persistence and request tracking
+- **Express** (Node.js) for server-side logic
+- **SQLite** (built into Node) for data persistence and request tracking
 - **RESTful APIs** for seamless frontend-backend communication
 
 ### Blockchain
@@ -233,57 +233,53 @@ contract HydrogenCredit {
      .send({ from: userAddress });
    ```
 
-## Getting Started
+## Getting Started (local demo)
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- PostgreSQL database
-- MetaMask browser extension
-- Sepolia testnet ETH
+- Node.js **22.13 or newer** (the backend uses the built-in `node:sqlite`, so no database server is needed)
 
-### Installation
+### Run it
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-org/hydrochain.git
-   cd hydrochain
-   ```
+```bash
+npm run setup   # installs root, backend and frontend dependencies
+npm run dev     # starts the API on :4000 and the web app on :5173
+```
 
-2. **Install frontend dependencies**
-   ```bash
-   cd frontend
-   npm install
-   ```
+Open http://localhost:5173. The frontend proxies `/api/*` to the backend, so no `.env` is required.
 
-3. **Install backend dependencies**
-   ```bash
-   cd backend
-   npm install
-   ```
+### Demo accounts
 
-4. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Configure your database and blockchain settings
-   SEPOLIA_RPC_URL=your-sepolia-rpc-url
-   CONTRACT_ADDRESS=your-deployed-contract-address
-   ```
+Seeded automatically on first start (see `backend/src/db.js`):
 
-5. **Deploy smart contracts**
-   ```bash
-   cd contracts
-   npx hardhat compile
-   npx hardhat deploy --network sepolia
-   ```
+| Role     | Username     | Password      | DID                   |
+|----------|--------------|---------------|-----------------------|
+| Plant    | `greenplant` | `plant123`    | `did:hydro:plant1`    |
+| Industry | `steelco`    | `industry123` | `did:hydro:industry1` |
+| Auditor  | `auditor`    | `auditor123`  | (not required)        |
 
-6. **Run the application**
-   ```bash
-   # Start backend
-   cd backend && npm start
-   
-   # Start frontend (new terminal)
-   cd frontend && npm run dev
-   ```
+New Plant/Industry accounts can be created on the Register page (use `auditor` as the assigned auditor).
+
+### Demo walkthrough
+1. **Plant** → Generate Credits (creates a pending issue request).
+2. **Auditor** → Accept it. A credit ID like `HC-1A2B3C4D` is minted and written to the ledger.
+3. **Industry** → in *Transfer Credits*, type `greenplant` in Username and press **Enter**, pick the credit, Transfer.
+4. **Auditor** → Accept the transfer. **Industry** → Retire the credit → **Auditor** accepts.
+
+To show the anomaly flag, switch the IoT feed to the bad sample readings before generating a request:
+
+```bash
+curl -X PUT localhost:4000/iot/index -H "Content-Type: application/json" -d '{"scenario":"anomaly"}'
+```
+
+(Use `"normal"` to switch back.) `GET /ledger` returns the hash-chained ledger and whether it verifies.
+
+### Useful scripts
+- `npm test` runs the backend API tests
+- `npm run reset-db` wipes all credits/requests and re-seeds the demo accounts (stop `npm run dev` first)
+
+### Project layout
+- `backend/` is an Express + SQLite API: auth, issue/buy/retire requests, auditor approvals, anomaly checks and a SHA-256 hash-chained ledger
+- `frontend/` is React + Vite (originally [Kaushal-00/hydrochain-frontend](https://github.com/Kaushal-00/hydrochain-frontend))
 
 ## Usage
 
