@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { SESSION_COOKIE, createSession, hashPassword, requireAuth, verifyPassword } from "../auth.js";
+import { bearerToken, createSession, hashPassword, requireAuth, verifyPassword } from "../auth.js";
 
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,32}$/;
 const SELF_SERVICE_ROLES = ["Plant", "Industry"];
@@ -49,14 +49,13 @@ export function usersRouter(db) {
     if (user.role !== "Auditor" && user.did !== did?.trim()) {
       return res.status(401).json({ success: false, error: "DID does not match this account" });
     }
-    res.cookie(SESSION_COOKIE, createSession(db, user.username), { httpOnly: true, sameSite: "lax", maxAge: 7 * 24 * 3600 * 1000 });
-    res.json({ success: true, data: { username: user.username, role: user.role } });
+    res.json({ success: true, data: { username: user.username, role: user.role, token: createSession(db, user.username) } });
   });
 
   router.post("/logout", (req, res) => {
-    const token = req.cookies?.[SESSION_COOKIE];
+    const token = bearerToken(req);
     if (token) db.prepare("DELETE FROM sessions WHERE token = ?").run(token);
-    res.clearCookie(SESSION_COOKIE).json({ success: true });
+    res.json({ success: true });
   });
 
   router.get("/me", auth, (req, res) => res.json({ success: true, data: req.user }));

@@ -10,10 +10,10 @@
     "dev": "node --watch --disable-warning=ExperimentalWarning src/server.js",
     "start": "node --disable-warning=ExperimentalWarning src/server.js",
     "reset": "node --disable-warning=ExperimentalWarning src/reset.js",
+    "seed": "node --disable-warning=ExperimentalWarning src/seed.js",
     "test": "node --disable-warning=ExperimentalWarning --test \"test/**/*.test.js\""
   },
   "dependencies": {
-    "cookie-parser": "^1.4.7",
     "express": "^5.1.0"
   }
 }

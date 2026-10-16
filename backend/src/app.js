@@ -1,5 +1,4 @@
 import express from "express";
-import cookieParser from "cookie-parser";
 import { requireAuth } from "./auth.js";
 import { readLedger } from "./ledger.js";
 import { usersRouter } from "./routes/users.js";
@@ -16,12 +15,10 @@ export function createApp(db, { corsOrigin = process.env.CORS_ORIGIN ?? "http://
   let iotScenario = process.env.IOT_SCENARIO in IOT_SCENARIOS ? process.env.IOT_SCENARIO : "normal";
 
   app.use(express.json({ limit: "100kb" }));
-  app.use(cookieParser());
   app.use((req, res, next) => {
     res.set({
       "Access-Control-Allow-Origin": corsOrigin,
-      "Access-Control-Allow-Credentials": "true",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
       "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
     });
     if (req.method === "OPTIONS") return res.sendStatus(204);

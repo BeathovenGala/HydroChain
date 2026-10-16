@@ -1,4 +1,4 @@
-import { client, errorMessage } from "../../config";
+import { client, errorMessage, setAuthToken } from "../../config";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -16,7 +16,8 @@ const Login = () => {
                 did,
                 password
             })
-            const actualRole = res.data?.data?.role ?? role;
+            setAuthToken(res.data.data.token);
+            const actualRole = res.data.data.role ?? role;
             navigate(`/${actualRole.toLowerCase()}/dashboard`);
         } catch (err) {
             alert(`Login failed: ${errorMessage(err)}`);
