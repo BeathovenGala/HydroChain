@@ -35,7 +35,7 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
         );
     }
 
-    const columns = Object.keys(data[0]).filter((key) => key !== "id" && key !== "anomaly");
+    const columns = Object.keys(data[0]).filter((key) => !["id", "anomaly", "anomalyReasons"].includes(key));
 
     const columnWidths = {
         amount: "8%",
@@ -183,7 +183,7 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                                     <span
                                         className={`inline-block w-4 h-4 rounded-full ${row.anomaly ? "bg-red-500" : "bg-green-500"
                                             }`}
-                                        title={row.anomaly ? "Anomaly detected" : "No anomaly"}
+                                        title={row.anomaly ? `Anomaly: ${row.anomalyReasons?.join("; ") || "detected"}` : "No anomaly"}
                                     ></span>
                                 </td>
                             </tr>

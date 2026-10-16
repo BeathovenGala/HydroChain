@@ -59,7 +59,7 @@ const PlantDashboard = () => {
     async function issueRequest() {
         try {
             await client.post('/request/issues', {
-                amount: 1,
+                amount: plantData[plantDataIndex]?.hydrogenProduced ?? 1, // 1 credit per kg of H2
                 metadata: JSON.stringify(plantData[plantDataIndex])
             });
             alert("Issue request submitted for auditor approval!");

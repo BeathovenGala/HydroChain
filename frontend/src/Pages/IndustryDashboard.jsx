@@ -8,6 +8,8 @@ import { client, errorMessage, NPOINT_URL } from "../../config";
 import { POLL_INTERVAL_MS } from "@/lib/utils";
 import axios from "axios";
 
+const percentOf = (part, whole) => (whole > 0 ? `${Math.round((part / whole) * 100)}%` : "0%");
+
 const IndustryDashboard = () => {
     const [username, setUsername] = useState("loading...");
     const [userData, setUserData] = useState();
@@ -138,8 +140,8 @@ const IndustryDashboard = () => {
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Welcome, {username} 🌱</h1>
 
             <div className="flex justify-center">
-                <DisplayCard variant="numerical" title="Total Credit Retired" number={userData?.creditSummary?.lifeTimeRetiredCredits ?? '-'} msg="+12% from last month" />
-                <DisplayCard variant="numerical" title="Total Credit Bought" number={userData?.creditSummary?.lifeTimeBoughtCredits ?? '-'} msg="77% utilization rate" />
+                <DisplayCard variant="numerical" title="Total Credit Retired" number={userData?.creditSummary?.lifeTimeRetiredCredits ?? '-'} msg={`${percentOf(userData?.creditSummary?.lifeTimeRetiredCredits, userData?.creditSummary?.lifeTimeBoughtCredits)} of bought credits retired`} />
+                <DisplayCard variant="numerical" title="Total Credit Bought" number={userData?.creditSummary?.lifeTimeBoughtCredits ?? '-'} msg={`${userData?.creditSummary?.activeAmount ?? 0} still available to retire`} />
                 <DisplayCard variant="nameDisplay" title="Assigned Auditor" displayName={userData?.auditorUsername ?? "Not assigned"} subMsg="Verified & Active" />
             </div>
 

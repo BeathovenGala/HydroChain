@@ -247,7 +247,7 @@ npm run dev     # starts the API on :4000 and the web app on :5173
 
 Open http://localhost:5173. The frontend proxies `/api/*` to the backend, so no `.env` is required.
 
-Want a populated demo? Stop `npm run dev`, run `npm run seed`, then start it again. It resets the database and adds a realistic history: 5 issued credits, transfers, a retirement, a rejected anomalous request, and 4 pending requests for the auditor (one flagged as an anomaly). It also adds `solarh2` (Plant, DID `did:hydro:plant2`) and `fertico` (Industry, DID `did:hydro:industry2`), with the same passwords as the matching demo role.
+Want a populated demo? Stop `npm run dev`, run `npm run seed`, then start it again. It resets the database and adds about a month of history: 14 issued credits, 9 transfers, 4 retirements, rejected anomalies, and 7 pending requests for the auditor (3 flagged). It also adds plants `solarh2` and `windh2` (DIDs `did:hydro:plant2`/`plant3`) and industries `fertico` and `refinex` (DIDs `did:hydro:industry2`/`industry3`), with the same passwords as the matching demo role.
 
 Logins are kept per browser tab, so you can keep Plant, Industry and Auditor open side by side. Dashboards refresh every 5 seconds, so an approval in the auditor tab shows up in the others.
 
@@ -280,6 +280,10 @@ curl -X PUT localhost:4000/iot/index -H "Content-Type: application/json" -d '{"s
 ### Useful scripts
 - `npm test` runs the backend API tests
 - `npm run reset-db` wipes all credits/requests and re-seeds the demo accounts (stop `npm run dev` first)
+- `npm run seed` loads the full demo dataset (stop `npm run dev` first)
+- `npm run tamper` / `npm run untamper` edit one ledger block directly, so the auditor's ledger badge flips to "Chain tampered" and back
+
+See [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for a step-by-step demo walkthrough.
 
 ### Project layout
 - `backend/` is an Express + SQLite API: auth, issue/buy/retire requests, auditor approvals, anomaly checks and a SHA-256 hash-chained ledger
