@@ -3,6 +3,7 @@ import { client, errorMessage } from "../../config";
 import { POLL_INTERVAL_MS } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import DataTable from "@/components/DataTable";
+import LedgerCard from "@/components/LedgerCard";
 import { useNavigate } from "react-router-dom";
 
 const AuditDashboard = () => {
@@ -35,7 +36,8 @@ const AuditDashboard = () => {
                         type: "ISSUE",
                         requester: r.requester,
                         metadata: r.metadata,
-                        anomaly: r.anomaly, // <-- include anomaly
+                        anomaly: r.anomaly,
+                        anomalyReasons: r.anomalyReasons,
                     })),
                     ...buys.data.data.map((r) => ({
                         id: r.id,
@@ -46,7 +48,8 @@ const AuditDashboard = () => {
                         requester: r.requester,
                         creditId: r.creditId,
                         metadata: r.metadata,
-                        anomaly: r.anomaly, // <-- include anomaly
+                        anomaly: r.anomaly,
+                        anomalyReasons: r.anomalyReasons,
                     })),
                     ...retires.data.data.map((r) => ({
                         id: r.id,
@@ -57,7 +60,8 @@ const AuditDashboard = () => {
                         requester: r.requester,
                         creditId: r.creditId,
                         metadata: r.metadata,
-                        anomaly: r.anomaly, // <-- include anomaly
+                        anomaly: r.anomaly,
+                        anomalyReasons: r.anomalyReasons,
                     })),
                 ];
 
@@ -148,6 +152,10 @@ const AuditDashboard = () => {
                 ) : (
                     <DataTable data={requests} audit onAuditAction={handleAuditAction} />
                 )}
+            </div>
+
+            <div className="flex justify-center">
+                <LedgerCard />
             </div>
 
             <div className="flex flex-col min-h-[35dvh]">
