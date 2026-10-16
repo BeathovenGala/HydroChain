@@ -14,16 +14,16 @@ before(async () => {
 after(() => server.close());
 
 function client() {
-  let cookie = "";
+  let token = "";
   return async (method, path, body) => {
     const res = await fetch(base + path, {
       method,
-      headers: { "Content-Type": "application/json", cookie },
+      headers: { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }) },
       body: body ? JSON.stringify(body) : undefined,
     });
-    const setCookie = res.headers.get("set-cookie");
-    if (setCookie) cookie = setCookie.split(";")[0];
-    return { status: res.status, body: await res.json() };
+    const json = await res.json();
+    if (json.data?.token) token = json.data.token;
+    return { status: res.status, body: json };
   };
 }
 

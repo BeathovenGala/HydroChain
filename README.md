@@ -247,6 +247,10 @@ npm run dev     # starts the API on :4000 and the web app on :5173
 
 Open http://localhost:5173. The frontend proxies `/api/*` to the backend, so no `.env` is required.
 
+Want a populated demo? Stop `npm run dev`, run `npm run seed`, then start it again. It resets the database and adds a realistic history: 5 issued credits, transfers, a retirement, a rejected anomalous request, and 4 pending requests for the auditor (one flagged as an anomaly). It also adds `solarh2` (Plant, DID `did:hydro:plant2`) and `fertico` (Industry, DID `did:hydro:industry2`), with the same passwords as the matching demo role.
+
+Logins are kept per browser tab, so you can keep Plant, Industry and Auditor open side by side. Dashboards refresh every 5 seconds, so an approval in the auditor tab shows up in the others.
+
 ### Demo accounts
 
 Seeded automatically on first start (see `backend/src/db.js`):

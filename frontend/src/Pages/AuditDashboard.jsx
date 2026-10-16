@@ -1,5 +1,6 @@
 import DisplayCard from "@/components/DisplayCard";
 import { client, errorMessage } from "../../config";
+import { POLL_INTERVAL_MS } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import DataTable from "@/components/DataTable";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,7 @@ const AuditDashboard = () => {
 
     // Fetch user info + requests
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (isPoll = false) => {
             try {
                 // Get logged-in user info
                 const res = await client.get("/me");
@@ -60,17 +61,18 @@ const AuditDashboard = () => {
                     })),
                 ];
 
-                console.table(combined.map((r) => ({ type: r.type, status: r.status })));
                 setRequests(combined);
             } catch (err) {
                 console.error("Failed to fetch requests:", err);
-                alert(`Failed to fetch requests: ${errorMessage(err)}`);
+                if (!isPoll) alert(`Failed to fetch requests: ${errorMessage(err)}`);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
+        const timer = setInterval(() => fetchData(true), POLL_INTERVAL_MS);
+        return () => clearInterval(timer);
     }, []);
 
     // Handle Accept/Reject actions

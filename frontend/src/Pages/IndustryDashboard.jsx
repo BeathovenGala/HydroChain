@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DisplayCard from "../components/DisplayCard";
 import { client, errorMessage, NPOINT_URL } from "../../config";
+import { POLL_INTERVAL_MS } from "@/lib/utils";
 import axios from "axios";
 
 const IndustryDashboard = () => {
@@ -82,6 +83,8 @@ const IndustryDashboard = () => {
             }
         }
         fetchUser();
+        const timer = setInterval(fetchUser, POLL_INTERVAL_MS);
+        return () => clearInterval(timer);
     }, [])
 
     async function retireCredit(creditId) {

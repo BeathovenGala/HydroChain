@@ -1,5 +1,6 @@
 import axios from "axios";
 import { client, errorMessage, NPOINT_URL } from "../../config";
+import { POLL_INTERVAL_MS } from "@/lib/utils";
 import CreditBalanceCard from "../components/CreditBalanceCard";
 import DataTable from "../components/DataTable";
 import DisplayCard from "../components/DisplayCard";
@@ -51,6 +52,8 @@ const PlantDashboard = () => {
             }
         }
         fetchUser();
+        const timer = setInterval(fetchUser, POLL_INTERVAL_MS);
+        return () => clearInterval(timer);
     }, []);
 
     async function issueRequest() {
